@@ -5,8 +5,12 @@ using System.Collections.Generic;
 namespace Prototype {
     class Program {
         static void Main(string[] args) {
+            //  Section 6
+            //  Getting the manager
             ServerManager serverManager = new ServerManager();
 
+            //  Section 7
+            //  Loading the manager with prototypes
             serverManager.AddPrototype(
                 "aws",
                 new AwsServer {
@@ -23,14 +27,21 @@ namespace Prototype {
                     NCpuCores = 4
                 });
 
+            //  Section 8
+            //  Getting the initial prototypes
             IServerPrototype awsPrototype = serverManager.GetPrototype("aws");
             IServerPrototype azurePrototype = serverManager.GetPrototype("azure");
 
+            //  Section 9
+            //  Crux: asking the prototypes to clone themselves
             IServerPrototype anotherAwsPrototype = awsPrototype.Clone();
             IServerPrototype anotherAzurePrototype = azurePrototype.Clone();
         }
     }
 
+    //  Section 1
+    //  Define the prototype interface
+    //  If the objects do not have a common interface, this can be skipped
     interface IServerPrototype {
         IServerPrototype Clone();
         void Start();
@@ -43,6 +54,11 @@ namespace Prototype {
         public int DiskCapacity { get; set; }
 
         public IServerPrototype Clone() {
+            //  Section 2
+            //  Object uses itself to clone
+            //  several avenues from here
+            //  some use reflection
+            //  You may have to deal with deep-copy complexities here
             return new AwsServer {
                 NCpuCores = this.NCpuCores,
                 MemoryCapacity = this.MemoryCapacity,
@@ -81,6 +97,10 @@ namespace Prototype {
         }
     }
 
+    //  Section 3
+    //  This may not be required all the time
+    //  This example is more tuned to portray the abstract factory like functionality
+    //  Conventionally called a prototype manager
     class ServerManager {
         private readonly IDictionary<string, IServerPrototype> _registry;
 
@@ -88,6 +108,8 @@ namespace Prototype {
             _registry = new Dictionary<string, IServerPrototype>();
         }
 
+        //  Section 4
+        //  client decides the prototypes in the manager
         public void AddPrototype(string identifier, IServerPrototype prototype) {
             _registry.Add(identifier, prototype);
         }
@@ -103,6 +125,8 @@ namespace Prototype {
             return false;
         }
 
+        //  Section 5
+        //  client uses this for initial objects
         public IServerPrototype GetPrototype(string identifier) {
             return _registry[identifier];
         }

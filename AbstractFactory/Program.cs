@@ -3,9 +3,14 @@
 namespace AbstractFactory {
     class Program {
         static void Main(string[] args) {
+            //  Section 4
+            //  Get the factory objects
             ICloudFactory awsFactory = new AwsCloudFactory();
             ICloudFactory azureFactory = new AzureCloudFactory();
 
+            //  Section 5
+            //  Get the products
+            //  Products are themed by the factory implementers
             IVirtualMachine vmAws = awsFactory.CreateVirtualMachine();
             IVirtualMachine vmAzure = azureFactory.CreateVirtualMachine();
 
@@ -20,6 +25,9 @@ namespace AbstractFactory {
         }
     }
 
+    //  Section 1
+    //  Defining a product interfaces and implementations
+    //  Note that there are two distinct products (VirtualMachine and AppService)
     interface IVirtualMachine {
         void Start();
     }
@@ -52,12 +60,16 @@ namespace AbstractFactory {
         }
     }
 
-
+    //  Section 2
+    //  Abstract factory interface
+    //  This deals with creation of distinct products of a common theme (theme is defined by the implementer)
     interface ICloudFactory {
         IVirtualMachine CreateVirtualMachine();
         IAppService CreateAppService();
     }
 
+    //  Section 3
+    //  Implementations that define products of the factory on a theme
     class AwsCloudFactory : ICloudFactory {
         public IVirtualMachine CreateVirtualMachine() {
             return new AwsEc2();
